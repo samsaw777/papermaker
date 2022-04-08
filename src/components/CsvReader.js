@@ -5,6 +5,7 @@ const CsvReader = () => {
   const [csvFile, setCsvFile] = useState();
   const [csvArray, setCsvArray] = useState([]);
   const [randomArray, setRandomArray] = useState([]);
+  const [showPaper, setShowPaper] = useState(false);
 
   const makeObject = (objectArr, delim, header) => {
     const newArray = objectArr.map((row) => {
@@ -54,6 +55,9 @@ const CsvReader = () => {
     }
     console.log(newCSVArray);
     console.log(randomArray);
+    if (newCSVArray.length > 0 || removedEmptyRows.length > 0) {
+      setShowPaper(!showPaper);
+    }
   };
 
   console.log(csvArray);
@@ -74,29 +78,37 @@ const CsvReader = () => {
   console.log(csvArray);
   return (
     <div>
-      <div className="flex items-center justify-center">
-        <form
-          id="cdv-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (csvFile) submitFile();
-          }}
-        >
-          <input
-            type="file"
-            accept=".csv"
-            id="csvFile"
-            onChange={(e) => {
-              setCsvFile(e.target.files[0]);
+      {!showPaper && (
+        <div className="flex items-center justify-center h-[70vh]">
+          <form
+            id="cdv-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (csvFile) submitFile();
             }}
-          />
+          >
+            <input
+              type="file"
+              accept=".csv"
+              id="csvFile"
+              onChange={(e) => {
+                setCsvFile(e.target.files[0]);
+              }}
+            />
 
-          <button type="submit" className="px-5 py-3 rounded bg-green-500">
-            Upload
-          </button>
-        </form>
-      </div>
-      {csvArray.length > 0 && <Paper csvReader={csvArray} />}
+            <button type="submit" className="px-5 py-3 rounded bg-green-500">
+              Upload
+            </button>
+          </form>
+        </div>
+      )}
+      {showPaper && (
+        <Paper
+          csvReader={csvArray}
+          setShowPaper={setShowPaper}
+          showPaper={showPaper}
+        />
+      )}
     </div>
   );
 };
